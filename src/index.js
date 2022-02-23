@@ -18,13 +18,20 @@ class Board extends React.Component {
         super(props);
         this.state = {
             squares: Array(9).fill(null),
+            // перший хід "X"
+            xIsNext: true,
         };
     }
 
     handleClick(i) {
         const squares = this.state.squares.slice();
-        squares[i] = 'X';
-        this.setState({ squares: squares });
+        // якщо xIsNext = true, ставить символ 'X', якщо xIsNext = false, то 'O'
+        squares[i] = this.state.xIsNext ? 'X' : 'O';
+        this.setState({
+            squares: squares,
+            // змінює значення xIsNext на протилежне
+            xIsNext: !this.state.xIsNext,
+        });
     }
 
     renderSquare(i) {
@@ -37,7 +44,8 @@ class Board extends React.Component {
     }
 
     render() {
-        const status = 'Next player: X';
+        // показує статус, який гравець має ходити 'X' чи 'O'
+        const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
         return (
             <div>
