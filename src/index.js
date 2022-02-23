@@ -25,6 +25,10 @@ class Board extends React.Component {
 
     handleClick(i) {
         const squares = this.state.squares.slice();
+        // ігнорування натиску, якщо хтось переміг або поле повністю заповнене
+        if (calculateWinner(squares) || squares[i]) {
+            return;
+        }
         // якщо xIsNext = true, ставить символ 'X', якщо xIsNext = false, то 'O'
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
@@ -44,8 +48,15 @@ class Board extends React.Component {
     }
 
     render() {
-        // показує статус, який гравець має ходити 'X' чи 'O'
-        const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        // перевіримо, чи гравехь виграв
+        const winner = calculateWinner(this.state.squares);
+        let status;
+        if (winner) {
+            status = 'Winner: ' + winner;
+        } else {
+            // показує статус, який гравець має ходити 'X' чи 'O'
+            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        }
 
         return (
             <div>
@@ -92,3 +103,24 @@ ReactDOM.render(
     <Game />,
     document.getElementById('root')
 );
+
+// визначити переможця
+function calculateWinner(squares) {
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6,]
+    ];
+    for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            return squares[a];
+        }
+    }
+    return null;
+}
